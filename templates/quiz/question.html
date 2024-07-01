@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question {{ question.id }}</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+    <!-- TODO: When added to style.css, the css for button and inputs won't be applied. Is this a bug?-->
+    <style>
+        .top-right {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+        }
+
+        input[type=button], input[type=submit], input[type=reset] {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+            background-color: #0056b3;
+        }
+
+        input[type=checkbox] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555555;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type=checkbox]:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        input[type=checkbox]:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
+</head>
+<body>
+<h1>Question {{ question.id }}</h1>
+<h2>{{ question.question }}</h2>
+<a class="top-right" href="{% url 'report_problem' question.id %}">Report problem</a>
+{% if question.question_text %}
+    <p>{{ question.question_text|linebreaksbr }}</p>
+{% endif %}
+{% if question.code_snippets %}
+    <pre class="code"><code class="language-java">{{ question.code_snippets }}</code></pre>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" name="submit" value="Submit" id="submit"/>
+</form>
+<br/>
+
+<div class="navigation">
+    {% if previous_question %}
+        <a href="{% url 'question' quiz.id previous_question.id %}">Previous</a>
+    {% endif %}
+    {% if next_question %}
+        <a href="{% url 'question' quiz.id next_question.id %}">Next</a>
+    {% else %}
+        <a href="{% url 'results' quiz.id %}">Show Results</a>
+    {% endif %}
+</div>
+
+
+</body>
+</html>

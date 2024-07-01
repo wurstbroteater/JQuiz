@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ quiz.name }} - Results</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+</head>
+<body>
+<h1>{{ quiz.name }} - Results</h1>
+
+<ul>
+    {% for result in results %}
+        <li>
+            <p>{{ result.question.question }}</p>
+            <p>Your answer:
+                {% if result.user_answer %}
+                    {{ result.user_answer }}
+                {% else %}
+                    No answer
+                {% endif %}
+            </p>
+            <p>Correct: {{ result.correct }}</p>
+            <p>Solution: {{ result.solution }}</p>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'leaderboard' quiz.id %}">Leaderboard</a>
+</body>
+</html>

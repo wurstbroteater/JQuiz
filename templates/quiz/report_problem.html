@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit a Problem</title>
+    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], textarea {
+            background: #4c5052;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Submit a Problem for Question: {{ question.id }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.problem_description.label_tag }}
+            {{ form.problem_description }}
+        </div>
+        <div>
+            {{ form.reported_by }}
+        </div>
+        <input type="hidden" name="question" value="{{ question.id }}">
+        {% if request.user %}
+        <input type="hidden" name="submitted_by" value="{{ request.user.id }}">
+        {% endif %}
+        <button type="submit">Submit Problem</button>
+    </form>
+</div>
+</body>
+</html>
