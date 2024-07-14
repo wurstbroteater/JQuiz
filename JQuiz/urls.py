@@ -15,27 +15,32 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
 from quiz import views
 
 app_name = "quiz"
 
+user_mgmt_patterns = [
+    path("accounts/", include("accounts.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("change-password/", auth_views.PasswordChangeView.as_view()),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+]
+
 quiz_patterns = [
     path('quiz/<int:quiz_id>/start/', views.quiz_start, name='quiz_start'),
     path('quiz/<int:turn_id>/question/<int:question_id>/', views.question_view, name='question'),
     path('quiz/<int:turn_id>/results/', views.results_view, name='results'),
 ]
-urlpatterns = quiz_patterns + [
+urlpatterns = user_mgmt_patterns + quiz_patterns + [
     path('admin/', admin.site.urls),
     path("", views.IndexView.as_view(), name="index"),
     path("<int:pk>/", views.DetailView.as_view(), name="detail"),
     path('quiz/<int:quiz_id>/leaderboard/', views.leaderboard_view, name='leaderboard'),
     path('quiz/', views.quiz_overview, name='quiz_overview'),
-
-    path('login/', auth_views.LoginView.as_view(template_name='quiz/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('report_problem/<int:question_id>/', views.report_problem, name='report_problem'),
     path('problem_reported/', views.problem_reported, name='problem_reported'),

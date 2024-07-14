@@ -1,22 +1,17 @@
-from django.db.models import F
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
 from django.db.models import Count
-from django.views import generic
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
-from .models import UserAnswer, Quiz, Question, Choice, QuizTurn, ProblemReport
 from django.contrib.auth.decorators import login_required
-from .forms import ChoiceForm, ProblemReportForm
 from django.core.exceptions import PermissionDenied
-from django.db.models import Max
+from django.db.models import Count
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views import generic
 
 from quiz.models import Question
+from .forms import ChoiceForm, ProblemReportForm
+from .models import UserAnswer, Quiz, Choice, QuizTurn
 
 
 class IndexView(generic.ListView):
-    template_name = "quiz/index.html"
+    template_name = "index.html"
     context_object_name = "latest_question_list"
 
     def get_queryset(self):

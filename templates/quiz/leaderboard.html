@@ -1,20 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ quiz.name }} - Leaderboard</title>
-    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
-</head>
-<body>
-<h1>{{ quiz.name }} - Leaderboard</h1>
+{% extends "base.html" %}
 
-<ul>
-    {% for entry in leaderboard %}
-        <li>{{ entry.user__username }} - {{ entry.total_correct }} correct answers</li>
-    {% endfor %}
-</ul>
+{% block title %}{{ quiz.name }} - Leaderboard{% endblock %}
 
-<a href="{% url 'quiz_start' quiz.id %}">Retake Quiz</a>
-</body>
-</html>
+{% block content %}
+    <h1>{{ quiz.name }} - Leaderboard</h1>
+    <ul>
+        {% for entry in leaderboard %}
+            <li>{{ entry.user__username }} - {{ entry.total_correct }} correct answers</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'quiz_start' quiz.id %}">Retake Quiz</a>
+{% endblock %}

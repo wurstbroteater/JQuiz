@@ -1,23 +1,17 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Quiz Overview</title>
-    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
-</head>
-<body>
-<h1>Available Quizzes</h1>
+{% extends "base.html" %}
 
-{% if quizzes %}
-    <ul>
-        {% for quiz in quizzes %}
-            <li><a href="{% url 'quiz_start' quiz.id %}">{{ quiz.name }}</a></li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No quizzes available.</p>
-{% endif %}
+{% block title %}Quiz Overview<{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <h2>Available Quizzes</h2>
+
+    {% if quizzes %}
+        <ul>
+            {% for quiz in quizzes %}
+                <li><a href="{% url 'quiz_start' quiz.id %}">{{ quiz.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No quizzes available.</p>
+    {% endif %}
+{% endblock %}

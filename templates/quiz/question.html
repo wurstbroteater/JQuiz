@@ -1,12 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Question {{ question.id }}</title>
-    <link rel="stylesheet" href="{% static 'quiz/style.css' %}">
-    <!-- TODO: When added to style.css, the css for button and inputs won't be applied. Is this a bug?-->
-    <style>
+{% extends "base.html" %}
+{% block title %}Question {{ question.id }}{% endblock %}
+
+{% block extendHTMLHeader %}
+      <style>
         .top-right {
             position: absolute;
             top: 50px;
@@ -53,11 +49,13 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
-</head>
-<body>
+{% endblock %}
+
+{% block extendBodyHeader %}<a href="{% url 'report_problem' question.id %}">Report problem</a>{% endblock %}
+
+{% block content %}
 <h1>Question {{ question.id }}</h1>
 <h2>{{ question.question }}</h2>
-<a class="top-right" href="{% url 'report_problem' question.id %}">Report problem</a>
 {% if question.question_text %}
     <p>{{ question.question_text|linebreaksbr }}</p>
 {% endif %}
@@ -82,7 +80,4 @@
         <a href="{% url 'results' quiz.id %}">Show Results</a>
     {% endif %}
 </div>
-
-
-</body>
-</html>
+{% endblock %}
