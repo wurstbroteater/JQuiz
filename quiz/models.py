@@ -31,7 +31,7 @@ class Choice(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.choice_text}"
+        return f"{self.answer_symbol} : {self.choice_text}"
 
 
 # -------------------------- Turn --------------------------
