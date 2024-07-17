@@ -2,10 +2,14 @@
 
 JQuiz is a web platform where users can answer multiple-choice questions related to Java in a competitive manner.
 
+## Requirements
+
+- Python 3.10.12 or later
 
 ## Installation
 
-You might want to consider using a venv.
+You might want to consider using `venv`.
+
 ```shell
 pip install -r /path/to/requirements.txt
 python manage.py makemigrations quiz && python manage.py migrate
@@ -14,7 +18,9 @@ python manage.py import_quiz /path/to/quiz.json
 ```
 
 ## JSON Format
+
 The format of the JSON file is still in development. Therefore, the following sample might not be up-to-date.
+
 ```json
 [
   {
