@@ -2,7 +2,7 @@
 
 ## 0.1
 
-TODO.
+- Fixed results view not showing after quiz completed
 
 ## 0.0.1
 
