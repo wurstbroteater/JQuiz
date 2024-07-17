@@ -1,9 +1,6 @@
 # JQuiz Changelog
 
-## x.x.x
+## 0.0.1
 
-This release ... .
+Initial proof of concept with minimal number of required features.
 
-- A
-- B
-- C
