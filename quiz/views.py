@@ -1,8 +1,9 @@
-from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count
-from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import IntegerField
+from django.db.models import Sum, F, Case, When
+from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render
 from django.views import generic
 
 from quiz.models import Question
@@ -15,7 +16,6 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
-        """Return the last five published questions."""
         return Question.objects.order_by("-submit_date")[:5]
 
 
@@ -31,18 +31,40 @@ class ResultsView(generic.DetailView):
 
 # --------------------------------------- Leaderboard ----------------------------------
 
-def leaderboard_view(request, quiz_id):
-    quiz = get_object_or_404(Quiz, id=quiz_id)
-    leaderboard = (UserAnswer.objects
-                   .filter(question__related_quiz=quiz, selected_choice__is_correct=True)
-                   .values('user__username')
-                   .annotate(total_correct=Count('id'))
-                   .order_by('-total_correct'))
+def leaderboard_overall_view(request):
+    quizzes = Quiz.objects.all()
+    return render(request, 'quiz/leaderboard.html',
+                  {'leaderboard_data': list(map(lambda q: _get_leaderboard(q), quizzes))})
 
-    return render(request, 'quiz/leaderboard.html', {
+
+def leaderboard_quiz_view(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    return render(request, 'quiz/leaderboard_quiz.html', {'leaderboard_data': _get_leaderboard(quiz)})
+
+
+def _get_leaderboard(quiz):
+    total_questions = Question.objects.filter(related_quiz=quiz).count()
+
+    user_scores = UserAnswer.objects.filter(
+        turn__quiz=quiz,
+        turn__is_completed=True
+    ).values(
+        'user__username'
+    ).annotate(
+        total_correct=Sum(
+            Case(
+                When(selected_choice__is_correct=True, then=1),
+                default=0,
+                output_field=IntegerField()
+            )
+        ),
+    ).annotate(
+        score_percentage=F('total_correct') * 100.0 / total_questions
+    ).order_by('-score_percentage')  # [:10]
+    return {
         'quiz': quiz,
-        'leaderboard': leaderboard,
-    })
+        'user_scores': user_scores
+    }
 
 
 # --------------------------------------- Quiz ----------------------------------

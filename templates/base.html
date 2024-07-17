@@ -7,6 +7,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}JQuiz{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .nav-left {
+            margin-left: 20px;
+        }
+
+        .nav-right {
+            margin-right: 20px;
+        }
+
+        .nav-left a {
+            margin-right: 20px; /* spacing between navigation links */
+            text-decoration: none;
+        }
+
+        .nav-right a {
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+    </style>
 
     {% block extendHTMLHeader %}
     {% endblock %}
@@ -14,21 +46,27 @@
 
 <body>
 
-<header>
-<div style="text-align: right">
-    {% if user.is_authenticated %}
-        Welcome, {{ user.username }}!
-            <a href="#" id="logout-link">Log Out</a>
-        <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
-            {% csrf_token %}
-        </form>
-    {% else %}
-        You are not logged in!
-            Please <a href="{% url 'login' %}">Log In</a> or <a href="{% url 'signup' %}">Sign Up</a>
-    {% endif %}
-    {% block extendBodyHeader %}
-    {% endblock %}
+<div class="page-title">
+    <h1>J<span style="color: #13A256;">Q</span>uiz</h1>
 </div>
+
+<header>
+    <div class="nav-left">
+        <a href="{% url 'quiz_overview' %}">Home</a>
+        <a href="{% url 'leaderboard' %}">Leaderboard</a>
+    </div>
+    <div class="nav-right">
+        {% if user.is_authenticated %}
+            <span>Welcome, {{ user.username }}!</span>
+            <a href="#" id="logout-link">Log Out</a>
+            <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                {% csrf_token %}
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Log In</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        {% endif %}
+    </div>
 </header>
 <script>
     document.getElementById('logout-link').addEventListener('click', function (event) {
