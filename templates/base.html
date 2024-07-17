@@ -8,11 +8,74 @@
     <title>{% block title %}JQuiz{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        form {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type=submit], input[type=button], input[type=submit], input[type=reset] {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #13A256;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type=submit]:hover, input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
+            background-color: #0E753E;
+        }
+
+        input[type=checkbox] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555555;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type=checkbox]:checked {
+            background-color: #13A256;
+            border-color: #13A256;
+        }
+
+        input[type=checkbox]:hover {
+            background-color: #0E753E;
+            border-color: #0E753E;
+        }
+
+        input[type=text], input[type=password], textarea {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+        input[type=text]:focus, input[type=password]:focus, textarea:focus {
+            border-color: #13A256;
+            outline: none;
+        }
+
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .nav-left {
@@ -36,7 +99,6 @@
         .page-title {
             text-align: center;
             font-size: 2.5em;
-            margin-bottom: 10px;
         }
     </style>
 
