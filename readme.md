@@ -19,7 +19,7 @@ python manage.py import_quiz /path/to/quiz.json
 
 ## JSON Format
 
-The format of the JSON file is still in development. Therefore, the following sample might not be up-to-date.
+The format of the JSON file (`quiz.json`) is still in development. Therefore, the following sample might not be up-to-date.
 
 ```json
 [
@@ -66,5 +66,5 @@ The format of the JSON file is still in development. Therefore, the following sa
 The following snippets shows how to export the quiz Chapter0 from database to JSON.
 
 ``` shell
- python manage.py export_quiz "Chapter0"
+ python manage.py export_quiz "Chapter 0"
 ```
