@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block extendHTMLHeader %}
+    <link id="prism-theme" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css"
+          rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
+    <style>
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        select {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        /* Styling the select element to affect options */
+        select:focus {
+            border-color: #13A256;
+            outline: none;
+        }
+
+        .unicode2423 {
+            text-decoration: underline;
+            text-decoration-color: #000;
+        }
+
+        /* Used in detail.html */
+        .choice-text {
+            font-weight: bold;
+            color: #ffc66d;
+        }
+    </style>
+{% endblock %}
+
+{% block menu_after_report_problem %}
+    {{ block.super }}
+    <label for="theme-selector">Choose Theme:</label>
+    <select id="theme-selector">
+        <option value="prism">Prism</option>
+        <option value="prism-coy">Coy</option>
+        <option value="prism-dark">Dark</option>
+        <option value="prism-funky">Funky</option>
+        <option value="prism-okaidia">Okaidia</option>
+        <option value="prism-solarizedlight">Solarized Light</option>
+        <option value="prism-tomorrow">Tomorrow (default)</option>
+        <option value="prism-twilight">Twilight</option>
+    </select>
+{% endblock %}
+
+{% block content %}
+    <script>
+        function setCookie(name, value) {
+            const storing_time_days = 7
+            let expires = "";
+            const date = new Date();
+            date.setTime(date.getTime() + (storing_time_days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function getCurrentCodeStyle() {
+            const defaultCodeStyle = 'prism-tomorrow';
+            const currentTheme = getCookie('theme');
+            if (currentTheme) {
+                return currentTheme;
+            }
+            setCookie('theme', defaultCodeStyle);
+            return defaultCodeStyle;
+        }
+
+        function setCurrentCodeStyle(themeName) {
+            const linkElement = document.getElementById('prism-theme');
+            linkElement.href = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/${themeName}.min.css`;
+            setCookie('theme', themeName);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const codeBlocks = document.querySelectorAll('pre code');
+            codeBlocks.forEach(block => {
+                block.innerHTML = block.innerHTML.replace(/\\u2423/g, '<span class="unicode2423">␣</span>');
+            });
+
+            const themeSelector = document.getElementById('theme-selector');
+            const currentCodeStyle = getCurrentCodeStyle()
+            setCurrentCodeStyle(currentCodeStyle)
+            themeSelector.value = currentCodeStyle;
+            themeSelector.addEventListener('change', function () {
+                setCurrentCodeStyle(this.value)
+            });
+        });
+    </script>
+
+    {% block highlight_content %}
+    {% endblock %}
+{% endblock %}

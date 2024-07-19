@@ -1,20 +1,17 @@
-{% extends "base.html" %}
+{% extends "quiz/base_highlighting.html" %}
 
 {% block title %}Question Detail{% endblock %}
-{% block extendHTMLHeader %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
-{% endblock %}
-{% block content %}
+
+{% block highlight_content %}
     <h1>Question {{ question.id }}</h1>
     <h2>{{ question.question }}</h2>
 
     {% if question.question_text %}
-        <p>{{ question.question_text }}</p>
+        <p>{{ question.question_text|linebreaksbr }}</p>
     {% endif %}
-    <p class="code">
-    <pre><code class="language-java">{{ question.code_snippets }}</code></pre>
-    </p>
+    {% if question.code_snippets %}
+        <pre><code class="language-java">{{ question.code_snippets|escape }}</code></pre>
+    {% endif %}
 
     <ul>
         {% for choice in question.choice_set.all %}
@@ -23,5 +20,4 @@
     </ul>
     <p>The question was submitted on {{ question.submit_date }}</p>
     <a href="{% url 'results' question.id %}">Show solution</a>
-
 {% endblock %}

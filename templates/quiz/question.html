@@ -1,12 +1,6 @@
-{% extends "base.html" %}
+{% extends "quiz/base_highlighting.html" %}
+
 {% block title %}Question {{ question.id }}{% endblock %}
-
-{% block extendHTMLHeader %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
-{% endblock %}
-
-{% block extendBodyHeader %}<a href="{% url 'report_problem' question.id %}">Report problem</a>{% endblock %}
 
 {% block content %}
     <h1>Question {{ question.id }}</h1>
@@ -15,7 +9,7 @@
         <p>{{ question.question_text|linebreaksbr }}</p>
     {% endif %}
     {% if question.code_snippets %}
-        <pre class="code"><code class="language-java">{{ question.code_snippets }}</code></pre>
+        <pre><code class="language-java">{{ question.code_snippets|escape }}</code></pre>
     {% endif %}
 
     <form method="post">
