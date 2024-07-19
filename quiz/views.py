@@ -157,18 +157,14 @@ def results_view(request, turn_id):
 
 # --------------------------------------- Problem Reporting ---------------------------------------
 
-def report_problem(request, question_id):
-    question = get_object_or_404(Question, id=question_id)
+def report_problem(request):
     if request.method == 'POST':
         form = ProblemReportForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('problem_reported')  # Redirect to a success page or the same form
+            previous_page = request.POST.get('referer_url', request.META.get('HTTP_REFERER', '/'))
+            return redirect(previous_page)
     else:
-        form = ProblemReportForm(initial={'question': question})
+        form = ProblemReportForm()
 
-    return render(request, 'quiz/report_problem.html', {'form': form, 'question': question})
-
-
-def problem_reported(request):
-    return render(request, 'quiz/problem_reported.html')
+    return render(request, 'report_problem.html', {'form': form})

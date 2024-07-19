@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Refactored problem submission to apply everywhere
 - Added fill-in area highlighting
 - Added Menu button to bottom right
 - Fixed results view not showing after quiz completed

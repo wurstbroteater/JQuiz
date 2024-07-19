@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Choice, ProblemReport
 
 
@@ -19,12 +20,8 @@ class ChoiceForm(forms.Form):
 class ProblemReportForm(forms.ModelForm):
     class Meta:
         model = ProblemReport
-        fields = ['question', 'problem_description', 'submitted_by']
+        fields = ['title', 'problem_description', 'submitted_by']
         widgets = {
-            'question': forms.HiddenInput(),
             'submitted_by': forms.HiddenInput(),
+            'title': forms.Textarea(attrs={'rows': 1})
         }
-
-    def __init__(self, *args, **kwargs):
-        super(ProblemReportForm, self).__init__(*args, **kwargs)
-        self.fields['question'].widget.attrs['readonly'] = True

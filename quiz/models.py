@@ -54,10 +54,10 @@ class UserAnswer(models.Model):
 
 # -------------------------- Problem Report --------------------------
 class ProblemReport(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    title = models.TextField()
     problem_description = models.TextField()
     submit_date = models.DateField(default=timezone.now)
     submitted_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Problem for {self.question}"
+        return self.title

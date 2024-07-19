@@ -42,7 +42,5 @@ urlpatterns = user_mgmt_patterns + quiz_patterns + [
     path('admin/', admin.site.urls),
     path("", views.IndexView.as_view(), name="index"),
     path("<int:pk>/", views.DetailView.as_view(), name="detail"),
-
-    path('report_problem/<int:question_id>/', views.report_problem, name='report_problem'),
-    path('problem_reported/', views.problem_reported, name='problem_reported'),
+    path('report_problem/', views.report_problem, name='report_problem'),
 ]
