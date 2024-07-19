@@ -40,6 +40,10 @@ class QuizTurn(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     is_completed = models.BooleanField(default=False)
 
+    def __str__(self):
+        state = "completed" if self.is_completed else "pending"
+        return f"Turn {self.id} {state} {self.user.username} : {self.quiz}"
+
 
 class UserAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
