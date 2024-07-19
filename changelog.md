@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Fixed anonymous user can't report problem
 - Fixed leaderboard showing incorrect numbers
 - Added preselection of `UserAnswers` in form
 - Fixed `UserAnswer` creation when submitting answer to question

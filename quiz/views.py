@@ -177,10 +177,15 @@ def results_view(request, turn_id):
 
 def report_problem(request):
     if request.method == 'POST':
-        form = ProblemReportForm(request.POST)
+        form = ProblemReportForm(request.POST, user=request.user if request.user.is_authenticated else None)
+        previous_page = request.POST.get('referer_url', request.META.get('HTTP_REFERER', '/'))
         if form.is_valid():
-            form.save()
-            previous_page = request.POST.get('referer_url', request.META.get('HTTP_REFERER', '/'))
+            problem_report = form.save(commit=False)
+            if request.user.is_authenticated:
+                problem_report.submitted_by = request.user
+            else:
+                problem_report.submitted_by = None
+            problem_report.save()
             return redirect(previous_page)
     else:
         form = ProblemReportForm()

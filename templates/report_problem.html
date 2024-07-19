@@ -43,9 +43,6 @@
             <div>
                 {{ form.reported_by }}
             </div>
-            {% if request.user %}
-                <input type="hidden" name="submitted_by" value="{{ request.user.id }}">
-            {% endif %}
             <input type="hidden" name="referer_url" value="{{ request.META.HTTP_REFERER }}">
             <button type="submit">Submit Problem</button>
         </form>

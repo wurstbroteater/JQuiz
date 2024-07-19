@@ -29,3 +29,11 @@ class ProblemReportForm(forms.ModelForm):
             'submitted_by': forms.HiddenInput(),
             'title': forms.Textarea(attrs={'rows': 1})
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ProblemReportForm, self).__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['submitted_by'].initial = user
+        else:
+            self.fields['submitted_by'].required = False
