@@ -9,39 +9,18 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #ffffff;
+            color: #F0F0F0;
             font-size: 15px;
-        }
-
-        select {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #fff;
-            color: #333;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-
-        /* Styling the select element to affect options */
-        select:focus {
-            border-color: #13A256;
-            outline: none;
         }
 
         .fill-in-area-marker {
             font-weight: bold;
             color: black;
         }
-
-        /* Used in detail.html */
-        .choice-text {
-            font-weight: bold;
-            color: #ffc66d;
-        }
     </style>
+    {% block extendHighlightingHeader %}
+    {% endblock %}
+
 {% endblock %}
 
 {% block menu_after_report_problem %}

@@ -1,6 +1,21 @@
-{% extends "quiz/../base_highlighting.html" %}
+{% extends "quiz/base_highlighting.html" %}
 
 {% block title %}Question Detail{% endblock %}
+
+{% block extendHighlightingHeader %}
+    <style>
+        .choice-symbol {
+            font-weight: bold;
+            color: #13A256;
+        }
+
+        .choice-text {
+            font-weight: bold;
+            color: #F0F0F0;
+
+        }
+    </style>
+{% endblock %}
 
 {% block highlight_content %}
     <h1>Question {{ question.id }}</h1>
@@ -15,7 +30,8 @@
 
     <ul>
         {% for choice in question.choice_set.all %}
-            <li><span class="choice-text">{{ choice.choice_text }}</span></li>
+            <li><span class="choice-symbol">{{ choice.answer_symbol }}</span> : <span
+                    class="choice-text">{{ choice.choice_text }}</span></li>
         {% endfor %}
     </ul>
     <p>The question was submitted on {{ question.submit_date }}</p>
