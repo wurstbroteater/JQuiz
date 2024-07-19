@@ -1,3 +1,5 @@
+from time import sleep
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import IntegerField
@@ -89,21 +91,30 @@ def question_view(request, turn_id, question_id):
     if request.user != turn.user:
         raise PermissionDenied
     question = get_object_or_404(Question, id=question_id)
-    choices = question.choice_set.all()
-
+    already_selected_user_answers = list(UserAnswer.objects.filter(
+        user=turn.user,
+        turn=turn,
+        question=question).all())
+    already_selected_choices = list(map(lambda ua: ua.selected_choice, already_selected_user_answers))
     if request.method == 'POST':
-        form = ChoiceForm(request.POST, question=question)
+        form = ChoiceForm(request.POST, question=question, pre_selection=already_selected_choices)
         if form.is_valid():
             selected_choices = form.cleaned_data['choices']
+            # Handle add or update
             for selected_choice in selected_choices:
-                UserAnswer.objects.update_or_create(
+                answer, _ = UserAnswer.objects.update_or_create(
                     user=turn.user,
                     turn=turn,
                     question=question,
-                    defaults={
-                        'selected_choice': selected_choice
-                    }
+                    selected_choice=selected_choice
                 )
+                if selected_choice in already_selected_choices:
+                    already_selected_user_answers.remove(answer)
+
+            # Handle remove
+            for answer in already_selected_user_answers:
+                answer.delete()
+
             next_question = turn.quiz.question_set.filter(id__gt=question.id).first()
             if next_question:
                 return redirect('question', turn_id=turn.id, question_id=next_question.id)
@@ -112,10 +123,11 @@ def question_view(request, turn_id, question_id):
                 turn.save()
                 return redirect('results', turn_id=turn.id)
     else:
-        form = ChoiceForm(question=question)
+        form = ChoiceForm(question=question, pre_selection=already_selected_choices)
 
     previous_question = turn.quiz.question_set.filter(id__lt=question.id).last()
     next_question = turn.quiz.question_set.filter(id__gt=question.id).first()
+    choices = question.choice_set.all()
 
     return render(request, 'quiz/question.html', {
         'quiz': turn,

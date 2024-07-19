@@ -11,10 +11,14 @@ class ChoiceForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        question = kwargs.pop('question', None)
-        super().__init__(*args, **kwargs)
-        if question:
-            self.fields['choices'].queryset = question.choice_set.all()
+        selected_choices = kwargs.pop('pre_selection', None)
+        question = kwargs.pop('question')
+
+        super(ChoiceForm, self).__init__(*args, **kwargs)
+
+        self.fields['choices'].queryset = question.choice_set.all()
+        if selected_choices:
+            self.fields['choices'].initial = list(map(lambda c: c.id, selected_choices))
 
 
 class ProblemReportForm(forms.ModelForm):

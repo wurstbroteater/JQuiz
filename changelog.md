@@ -2,6 +2,8 @@
 
 ## 0.1
 
+- Added preselection of `UserAnswers` in form
+- Fixed `UserAnswer` creation when submitting answer to question
 - Removed "Show Results" on last question in list because it would set turn to completed
 - Added `export_quiz "<QUIZ_NAME>"` command
 - Updated to PrismJS `1.29.0`
