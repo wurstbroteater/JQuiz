@@ -1,9 +1,5 @@
-from time import sleep
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import IntegerField, QuerySet
-from django.db.models import Sum, F, Case, When
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 from django.views import generic
