@@ -25,8 +25,6 @@
         {% endif %}
         {% if next_question %}
             <a href="{% url 'question' quiz.id next_question.id %}">Next</a>
-        {% else %}
-            <a href="{% url 'results' quiz.id %}">Show Results</a>
         {% endif %}
     </div>
 {% endblock %}
