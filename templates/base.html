@@ -100,6 +100,29 @@
             text-align: center;
             font-size: 2.5em;
         }
+
+        #popup-menu {
+            display: none;
+            position: fixed;
+            bottom: 55px;
+            right: 10px;
+            background-color: #595959;
+            border: 1px solid #404040;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        #popup-menu a {
+            display: block;
+            margin: 10px 0;
+        }
+
+        #menu-link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+        }
     </style>
 
     {% block extendHTMLHeader %}
@@ -114,7 +137,7 @@
 
 <header>
     <div class="nav-left">
-         <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'index' %}">Home</a>
         <a href="{% url 'quiz_overview' %}">Quizzes</a>
         <a href="{% url 'leaderboard' %}">Leaderboard</a>
     </div>
@@ -142,5 +165,37 @@
     {% block content %}
     {% endblock %}
 </main>
+
+<!-- Footer -->
+<a href="#" id="menu-link">Menu</a>
+<div id="popup-menu">
+    {% block menu_before_report_problem %}
+    {% endblock %}
+    <a href="{% url 'index' %}">Report problem</a>
+    {% block menu_after_report_problem %}
+    {% endblock %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const menuLink = document.getElementById('menu-link');
+        const popupMenu = document.getElementById('popup-menu');
+        let menuOpen = false;
+
+        menuLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            menuOpen = !menuOpen;
+            popupMenu.style.display = menuOpen ? 'block' : 'none';
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!popupMenu.contains(event.target) && event.target !== menuLink) {
+                popupMenu.style.display = 'none';
+                menuOpen = false;
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
