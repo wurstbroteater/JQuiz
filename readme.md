@@ -54,3 +54,12 @@ The format of the JSON file is still in development. Therefore, the following sa
 ]
 ```
 
+## Examples
+
+### Quiz Exporting
+
+The following snippets shows how to export the quiz Chapter0 from database to JSON.
+
+``` shell
+ python manage.py export_quiz "Chapter0"
+```

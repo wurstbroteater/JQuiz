@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Added `export_quiz "<QUIZ_NAME>"` command
 - Updated to PrismJS `1.29.0`
 - Refactored problem submission to apply everywhere
 - Added fill-in area highlighting
