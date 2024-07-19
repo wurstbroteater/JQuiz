@@ -1,9 +1,10 @@
 import json
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.dateparse import parse_date
+
 from quiz.models import Choice, Question, Quiz
-from pathlib import Path
 
 
 class Command(BaseCommand):
@@ -18,8 +19,8 @@ class Command(BaseCommand):
         with open(file_path, 'r') as file:
             data = json.load(file)
             # use file name as quiz name
-            quiz = Quiz.objects.create(name=Path(file_path).stem)
-            for q in data:
+            quiz = Quiz.objects.create(name=data['name'])
+            for q in data['questions']:
                 question = Question.objects.create(
                     related_quiz=quiz,
                     question_number=int(q['q_id']),
@@ -32,7 +33,6 @@ class Command(BaseCommand):
 
                 answer_symbol = "A"
                 for a in q['answers']:
-
                     Choice.objects.create(
                         answer_symbol=answer_symbol,
                         choice_text=a[answer_symbol],

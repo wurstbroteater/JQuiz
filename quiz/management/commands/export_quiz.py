@@ -26,15 +26,15 @@ class Command(BaseCommand):
                 for question in questions:
                     choices = question.choice_set.all()
                     choice_data = [{
-                        choice.answer_symbol: choice.choice_text,
                         'is_correct': choice.is_correct,
+                        choice.answer_symbol: choice.choice_text,
                     } for choice in choices]
 
                     question_data.append({
                         'q_id': question.question_number,
                         'question': question.question,
                         'text_snippets': question.question_text,
-                        'code_snippets': question.code_snippets,
+                        'code_snippets': question.code_snippets.split("\n"),
                         'answers': choice_data,
                         'solution_text': question.solution,
                         # 'submit_date': question.submit_date.isoformat(),
