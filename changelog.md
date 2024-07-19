@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Fixed leaderboard showing incorrect numbers
 - Added preselection of `UserAnswers` in form
 - Fixed `UserAnswer` creation when submitting answer to question
 - Removed "Show Results" on last question in list because it would set turn to completed

@@ -2,7 +2,7 @@ from time import sleep
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import IntegerField
+from django.db.models import IntegerField, QuerySet
 from django.db.models import Sum, F, Case, When
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
@@ -45,27 +45,37 @@ def leaderboard_quiz_view(request, quiz_id):
 
 
 def _get_leaderboard(quiz):
-    total_questions = Question.objects.filter(related_quiz=quiz).count()
+    print(f"quiz  id  {quiz.id}")
+    turns = QuizTurn.objects.filter(
+        quiz=quiz,
+        is_completed=True
+    )
 
-    user_scores = UserAnswer.objects.filter(
-        turn__quiz=quiz,
-        turn__is_completed=True
-    ).values(
-        'user__username'
-    ).annotate(
-        total_correct=Sum(
-            Case(
-                When(selected_choice__is_correct=True, then=1),
-                default=0,
-                output_field=IntegerField()
-            )
-        ),
-    ).annotate(
-        score_percentage=F('total_correct') * 100.0 / total_questions
-    ).order_by('-score_percentage')  # [:10]
+    user_scores = []
+    for turn in turns:
+        correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
+            'question').distinct().count()
+        print(f"correct_user_answers {correct_user_answers}")
+        total_questions = Question.objects.filter(related_quiz=quiz).count()
+        user_scores.append(
+            {"total_correct": correct_user_answers,
+             "total_possible": total_questions,
+             "score_percentage": correct_user_answers * 100.0 / total_questions,
+             "username": turn.user.username
+             })
+    user_scores = sorted(user_scores, key=lambda t: t["total_correct"], reverse=True)
+    distinct_key = "username"
+    seen_keys = set()
+    distinct_data = []
+    for d in user_scores:
+        k = d[distinct_key]
+        if k not in seen_keys:
+            distinct_data.append(d)
+            seen_keys.add(k)
+
     return {
         'quiz': quiz,
-        'user_scores': user_scores
+        'user_scores': distinct_data
     }
 
 
