@@ -24,32 +24,37 @@ The format of the JSON file is still in development. Therefore, the following sa
 ```json
 [
   {
-    "q_id": 1,
-    "question": "1. The answer to what?",
-    "text_snippets": "arthur.properties\r\nguide=Ford",
-    "code_snippets": [
-      "42:  final \u2423\u2423\u2423 x = dT.negate();",
-      "System.out.println(\"Don't Panic\");"
-    ],
-    "answers": [
+    "name": "Chapter 0",
+    "questions": [
       {
-        "is_correct": true,
-        "A": " Answer<Life>"
-      },
-      {
-        "is_correct": false,
-        "B": " The Universe!"
-      },
-      {
-        "is_correct": true,
-        "C": " Answer<Everything>"
-      },
-      {
-        "is_correct": false,
-        "D": " Comparator<Integer>"
+        "q_id": 1,
+        "question": "1. The answer to what?",
+        "text_snippets": "arthur.properties\r\nguide=Ford",
+        "code_snippets": [
+          "42:  final \u2423\u2423\u2423 x = dT.negate();",
+          "System.out.println(\"Don't Panic\");"
+        ],
+        "answers": [
+          {
+            "is_correct": true,
+            "A": " Answer<Life>"
+          },
+          {
+            "is_correct": false,
+            "B": " The Universe!"
+          },
+          {
+            "is_correct": true,
+            "C": " Answer<Everything>"
+          },
+          {
+            "is_correct": false,
+            "D": " Comparator<Integer>"
+          }
+        ],
+        "solution_text": "A, C. A is correct because 42 and C is correct because 42."
       }
-    ],
-    "solution_text": "A, C. A is correct because 42 and C is correct because 42."
+    ]
   }
 ]
 ```
