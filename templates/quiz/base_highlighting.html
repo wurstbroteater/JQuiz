@@ -31,9 +31,9 @@
             outline: none;
         }
 
-        .unicode2423 {
-            text-decoration: underline;
-            text-decoration-color: #000;
+        .fill-in-area-marker {
+            font-weight: bold;
+            color: black;
         }
 
         /* Used in detail.html */
@@ -97,18 +97,27 @@
             setCookie('theme', themeName);
         }
 
+        function replaceFillInAreaIndicator(str) {
+            return str.replaceAll('\u2423', '<span class="fill-in-area-marker">____</span>');
+        }
+
+        function applyFillInAreaStyle(node) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                node.childNodes.forEach(child => applyFillInAreaStyle(child));
+                node.innerHTML = replaceFillInAreaIndicator(node.innerHTML);
+            }
+        }
+
+        // main
         document.addEventListener("DOMContentLoaded", function () {
-            const codeBlocks = document.querySelectorAll('pre code');
-            codeBlocks.forEach(block => {
-                block.innerHTML = block.innerHTML.replace(/\\u2423/g, '<span class="unicode2423">␣</span>');
-            });
+            applyFillInAreaStyle(document.body);
 
             const themeSelector = document.getElementById('theme-selector');
-            const currentCodeStyle = getCurrentCodeStyle()
-            setCurrentCodeStyle(currentCodeStyle)
+            const currentCodeStyle = getCurrentCodeStyle();
+            setCurrentCodeStyle(currentCodeStyle);
             themeSelector.value = currentCodeStyle;
             themeSelector.addEventListener('change', function () {
-                setCurrentCodeStyle(this.value)
+                setCurrentCodeStyle(this.value);
             });
         });
     </script>

@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Added fill-in area highlighting
 - Added Menu button to bottom right
 - Fixed results view not showing after quiz completed
 
