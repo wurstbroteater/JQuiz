@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Updated to PrismJS `1.29.0`
 - Refactored problem submission to apply everywhere
 - Added fill-in area highlighting
 - Added Menu button to bottom right
