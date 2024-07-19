@@ -20,7 +20,7 @@
                 {% for score in quiz_data.user_scores %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ score.user__username }}</td>
+                        <td>{{ score.username }}</td>
                         <td>{{ score.total_correct }}</td>
                         <td>{{ score.score_percentage|floatformat:2 }}</td>
                     </tr>
