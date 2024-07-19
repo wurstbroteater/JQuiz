@@ -19,26 +19,27 @@ class Command(BaseCommand):
         with open(file_path, 'r') as file:
             data = json.load(file)
             # use file name as quiz name
-            quiz = Quiz.objects.create(name=data['name'])
-            for q in data['questions']:
-                question = Question.objects.create(
-                    related_quiz=quiz,
-                    question_number=int(q['q_id']),
-                    question=str(q['question']),
-                    question_text=str(q['text_snippets']),
-                    code_snippets="\n".join(q['code_snippets']),
-                    submit_date=parse_date(str(timezone.now().date())),
-                    solution=str(q['solution_text'])
-                )
-
-                answer_symbol = "A"
-                for a in q['answers']:
-                    Choice.objects.create(
-                        answer_symbol=answer_symbol,
-                        choice_text=a[answer_symbol],
-                        is_correct=a['is_correct'],
-                        question=question
+            for j_quiz in data:
+                quiz = Quiz.objects.create(name=j_quiz['name'])
+                for j_question in j_quiz['questions']:
+                    question = Question.objects.create(
+                        related_quiz=quiz,
+                        question_number=int(j_question['q_id']),
+                        question=str(j_question['question']),
+                        question_text=str(j_question['text_snippets']),
+                        code_snippets="\n".join(j_question['code_snippets']),
+                        submit_date=parse_date(str(timezone.now().date())),
+                        solution=str(j_question['solution_text'])
                     )
-                    answer_symbol = chr(ord(answer_symbol) + 1)
+
+                    answer_symbol = "A"
+                    for a in j_question['answers']:
+                        Choice.objects.create(
+                            answer_symbol=answer_symbol,
+                            choice_text=a[answer_symbol],
+                            is_correct=a['is_correct'],
+                            question=question
+                        )
+                        answer_symbol = chr(ord(answer_symbol) + 1)
 
         self.stdout.write(self.style.SUCCESS('Quiz imported successfully'))
