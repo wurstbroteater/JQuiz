@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Updated Question detail.html to show solution in hidden area
 - Fixed anonymous user can't report problem
 - Fixed leaderboard showing incorrect numbers
 - Added preselection of `UserAnswers` in form

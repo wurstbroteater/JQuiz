@@ -12,12 +12,37 @@
         .choice-text {
             font-weight: bold;
             color: #F0F0F0;
-
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .solution {
+            padding: 10px;
+            background-color: #595959;
+            border: 1px solid #404040;
+            margin-top: 10px;
+        }
+
     </style>
 {% endblock %}
 
 {% block highlight_content %}
+    <script>
+        function toggleSolution() {
+            const solutionDiv = document.getElementById('solutionDiv');
+            const button = document.querySelector('.toggle-button');
+            if (solutionDiv.classList.contains('hidden')) {
+                solutionDiv.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionDiv.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+    </script>
+
     <h1>Question {{ question.id }}</h1>
     <h2>{{ question.question }}</h2>
 
@@ -35,5 +60,9 @@
         {% endfor %}
     </ul>
     <p>The question was submitted on {{ question.submit_date }}</p>
-    <a href="{% url 'results' question.id %}">Show solution</a>
+
+    <button onclick="toggleSolution()">Show Solution</button>
+    <div id="solutionDiv" class="solution hidden">
+        <p>{{ question.solution|linebreaksbr }}</p>
+    </div>
 {% endblock %}
