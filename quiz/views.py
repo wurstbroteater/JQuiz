@@ -155,15 +155,11 @@ def results_view(request, turn_id):
     for question in questions:
         user_answers = UserAnswer.objects.filter(user=user, question=question, turn=turn).all()
         solutions = Choice.objects.filter(question=question, is_correct=True).all()
-        correct_ones = []
-        for answer in user_answers:
-            if answer.selected_choice.is_correct:
-                correct_ones.append(answer.selected_choice)
         results.append({
             'question': question,
             'user_answer': ", ".join(list(
                 map(lambda a: f"'{a.selected_choice.answer_symbol}. {a.selected_choice.choice_text}'", user_answers))),
-            'correct': len(correct_ones) == len(solutions),
+            'correct': len(user_answers) == len(solutions),
             'solution': question.solution,
         })
 
