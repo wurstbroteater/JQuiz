@@ -159,7 +159,7 @@ def results_view(request, turn_id):
             'question': question,
             'user_answer': ", ".join(list(
                 map(lambda a: f"'{a.selected_choice.answer_symbol}. {a.selected_choice.choice_text}'", user_answers))),
-            'correct': len(user_answers) == len(solutions),
+            'correct': len(user_answers.filter(selected_choice__is_correct=True)) == len(solutions),
             'solution': question.solution,
         })
 
