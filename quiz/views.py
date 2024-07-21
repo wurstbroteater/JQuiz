@@ -18,13 +18,18 @@ class IndexView(generic.ListView):
 
 
 class DetailView(generic.DetailView):
+    """
+    Shows all details of a single Question
+    """
     model = Question
     template_name = "quiz/detail.html"
 
-
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = "quiz/results.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.object
+        total_questions = Question.objects.filter(related_quiz=question.related_quiz).count()
+        context['total_questions'] = total_questions
+        return context
 
 
 # --------------------------------------- Leaderboard ----------------------------------
@@ -41,24 +46,8 @@ def leaderboard_quiz_view(request, quiz_id):
 
 
 def _get_leaderboard(quiz):
-    print(f"quiz  id  {quiz.id}")
-    turns = QuizTurn.objects.filter(
-        quiz=quiz,
-        is_completed=True
-    )
-
-    user_scores = []
-    for turn in turns:
-        correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
-            'question').distinct().count()
-        print(f"correct_user_answers {correct_user_answers}")
-        total_questions = Question.objects.filter(related_quiz=quiz).count()
-        user_scores.append(
-            {"total_correct": correct_user_answers,
-             "total_possible": total_questions,
-             "score_percentage": correct_user_answers * 100.0 / total_questions,
-             "username": turn.user.username
-             })
+    turns = QuizTurn.objects.filter(quiz=quiz, is_completed=True)
+    user_scores = list(map(lambda turn: _get_user_score(turn), turns))
     user_scores = sorted(user_scores, key=lambda t: t["total_correct"], reverse=True)
     distinct_key = "username"
     seen_keys = set()
@@ -73,6 +62,17 @@ def _get_leaderboard(quiz):
         'quiz': quiz,
         'user_scores': distinct_data
     }
+
+
+def _get_user_score(turn):
+    correct_user_answers = (UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True)
+                            .values('question').distinct().count())
+    total_questions = Question.objects.filter(related_quiz=turn.quiz).count()
+    return {"total_correct": correct_user_answers,
+            "total_possible": total_questions,
+            "score_percentage": correct_user_answers * 100.0 / total_questions,
+            "username": turn.user.username
+            }
 
 
 # --------------------------------------- Quiz ----------------------------------

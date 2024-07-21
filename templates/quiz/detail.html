@@ -43,7 +43,7 @@
         }
     </script>
 
-    <h1>Question {{ question.id }}</h1>
+    <h1>Question {{ question.id }} of {{ total_questions }} in Quiz <i>{{ question.related_quiz }}</i></h1>
     <h2>{{ question.question }}</h2>
 
     {% if question.question_text %}

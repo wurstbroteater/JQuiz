@@ -25,9 +25,8 @@ app_name = "quiz"
 user_mgmt_patterns = [
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("change-password/", auth_views.PasswordChangeView.as_view()),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path("login/", auth_views.LoginView.as_view(), name='login'),
+    path("logout/", auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 quiz_patterns = [

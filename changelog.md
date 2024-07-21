@@ -2,6 +2,7 @@
 
 ## 0.1
 
+- Added prototypic user account management
 - Fixed result.html shows correct even if answers are incorrect
 - Updated Question detail.html to show solution in hidden area
 - Fixed anonymous user can't report problem
