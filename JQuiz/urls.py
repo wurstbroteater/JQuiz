@@ -25,25 +25,21 @@ app_name = "quiz"
 user_mgmt_patterns = [
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("change-password/", auth_views.PasswordChangeView.as_view()),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path("login/", auth_views.LoginView.as_view(), name='login'),
+    path("logout/", auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 quiz_patterns = [
+    path('quiz/', views.quiz_overview, name='quiz_overview'),
     path('quiz/<int:quiz_id>/start/', views.quiz_start, name='quiz_start'),
     path('quiz/<int:turn_id>/question/<int:question_id>/', views.question_view, name='question'),
     path('quiz/<int:turn_id>/results/', views.results_view, name='results'),
+    path('quiz/leaderboard/', views.leaderboard_overall_view, name='leaderboard'),
     path('quiz/<int:quiz_id>/leaderboard/', views.leaderboard_quiz_view, name='leaderboard_quiz'),
 ]
 urlpatterns = user_mgmt_patterns + quiz_patterns + [
     path('admin/', admin.site.urls),
     path("", views.IndexView.as_view(), name="index"),
     path("<int:pk>/", views.DetailView.as_view(), name="detail"),
-
-    path('quiz/leaderboard/', views.leaderboard_overall_view, name='leaderboard'),
-    path('quiz/', views.quiz_overview, name='quiz_overview'),
-
-    path('report_problem/<int:question_id>/', views.report_problem, name='report_problem'),
-    path('problem_reported/', views.problem_reported, name='problem_reported'),
+    path('report_problem/', views.report_problem, name='report_problem'),
 ]

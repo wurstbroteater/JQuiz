@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>{{ quiz.name }} - Results</h1>
-
+    <a href="{% url 'leaderboard_quiz' quiz.id %}">{{ quiz.name }} Leaderboard</a>
     <ul>
         {% for result in results %}
             <li>
@@ -21,6 +21,5 @@
             </li>
         {% endfor %}
     </ul>
-
-    <a href="{% url 'leaderboard' quiz.id %}">Leaderboard</a>
+    <a href="{% url 'leaderboard_quiz' quiz.id %}">{{ quiz.name }} Leaderboard</a>
 {% endblock %}

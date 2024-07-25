@@ -1,27 +1,68 @@
-{% extends "base.html" %}
+{% extends "quiz/base_highlighting.html" %}
 
 {% block title %}Question Detail{% endblock %}
-{% block extendHTMLHeader %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-java.min.js"></script>
+
+{% block extendHighlightingHeader %}
+    <style>
+        .choice-symbol {
+            font-weight: bold;
+            color: #13A256;
+        }
+
+        .choice-text {
+            font-weight: bold;
+            color: #F0F0F0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .solution {
+            padding: 10px;
+            background-color: #595959;
+            border: 1px solid #404040;
+            margin-top: 10px;
+        }
+
+    </style>
 {% endblock %}
-{% block content %}
-    <h1>Question {{ question.id }}</h1>
+
+{% block highlight_content %}
+    <script>
+        function toggleSolution() {
+            const solutionDiv = document.getElementById('solutionDiv');
+            const button = document.querySelector('.toggle-button');
+            if (solutionDiv.classList.contains('hidden')) {
+                solutionDiv.classList.remove('hidden');
+                button.textContent = 'Hide Solution';
+            } else {
+                solutionDiv.classList.add('hidden');
+                button.textContent = 'Show Solution';
+            }
+        }
+    </script>
+
+    <h1>Question {{ question.id }} of {{ total_questions }} in Quiz <i>{{ question.related_quiz }}</i></h1>
     <h2>{{ question.question }}</h2>
 
     {% if question.question_text %}
-        <p>{{ question.question_text }}</p>
+        <p>{{ question.question_text|linebreaksbr }}</p>
     {% endif %}
-    <p class="code">
-    <pre><code class="language-java">{{ question.code_snippets }}</code></pre>
-    </p>
+    {% if question.code_snippets %}
+        <pre><code class="language-java">{{ question.code_snippets|escape }}</code></pre>
+    {% endif %}
 
     <ul>
         {% for choice in question.choice_set.all %}
-            <li><span class="choice-text">{{ choice.choice_text }}</span></li>
+            <li><span class="choice-symbol">{{ choice.answer_symbol }}</span> : <span
+                    class="choice-text">{{ choice.choice_text }}</span></li>
         {% endfor %}
     </ul>
     <p>The question was submitted on {{ question.submit_date }}</p>
-    <a href="{% url 'results' question.id %}">Show solution</a>
 
+    <button onclick="toggleSolution()">Show Solution</button>
+    <div id="solutionDiv" class="solution hidden">
+        <p>{{ question.solution|linebreaksbr }}</p>
+    </div>
 {% endblock %}

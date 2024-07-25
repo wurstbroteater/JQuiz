@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Choice, ProblemReport
 
 
@@ -10,21 +11,29 @@ class ChoiceForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        question = kwargs.pop('question', None)
-        super().__init__(*args, **kwargs)
-        if question:
-            self.fields['choices'].queryset = question.choice_set.all()
+        selected_choices = kwargs.pop('pre_selection', None)
+        question = kwargs.pop('question')
+
+        super(ChoiceForm, self).__init__(*args, **kwargs)
+
+        self.fields['choices'].queryset = question.choice_set.all()
+        if selected_choices:
+            self.fields['choices'].initial = list(map(lambda c: c.id, selected_choices))
 
 
 class ProblemReportForm(forms.ModelForm):
     class Meta:
         model = ProblemReport
-        fields = ['question', 'problem_description', 'submitted_by']
+        fields = ['title', 'problem_description', 'submitted_by']
         widgets = {
-            'question': forms.HiddenInput(),
             'submitted_by': forms.HiddenInput(),
+            'title': forms.Textarea(attrs={'rows': 1})
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(ProblemReportForm, self).__init__(*args, **kwargs)
-        self.fields['question'].widget.attrs['readonly'] = True
+        if user is not None:
+            self.fields['submitted_by'].initial = user
+        else:
+            self.fields['submitted_by'].required = False
