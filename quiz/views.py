@@ -36,14 +36,14 @@ class DetailView(generic.DetailView):
 
 def leaderboard_overall_view(request):
     quizzes = Quiz.objects.all()
-    return render(request, 'quiz/leaderboard.html',
+    return render(request, 'leaderboard/leaderboard.html',
                   {'leaderboard_data': list(map(lambda q: _get_leaderboard(q), quizzes))})
 
 
 def leaderboard_quiz_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
-    return render(request, 'quiz/leaderboard_quiz.html', {
-        'user_progress': _get_user_progress(request.user, quiz),
+    return render(request, 'leaderboard/leaderboard_quiz.html', {
+        'user_progress': get_user_progress(request.user, quiz),
         'leaderboard_data': _get_leaderboard(quiz),
     })
 
@@ -80,7 +80,7 @@ def _get_user_score_rank(user_score):
 
 
 def _get_user_score(turn):
-    return _get_user_progress(turn.user, turn.quiz) | {
+    return get_user_progress(turn.user, turn.quiz) | {
         "username": turn.user.username
     }
 
@@ -92,7 +92,7 @@ def _foo(turn):
     return correct_user_answers * 100.0 / total_questions
 
 
-def _get_user_progress(user, quiz):
+def get_user_progress(user, quiz):
     turns = QuizTurn.objects.filter(user=user, quiz=quiz, is_completed=True)
     scores = [_foo(turn) for turn in turns]
     best_score = max(scores, default=0)

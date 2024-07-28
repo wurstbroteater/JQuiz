@@ -2,6 +2,7 @@
 
 ## 0.2
 
+- Added personal progress overview to profile.
 - Reworked leaderboard to be more encouraging.
 
 ## 0.1

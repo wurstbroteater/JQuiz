@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout
 from .forms import UpdateEmailForm, DeleteAccountForm
+from quiz.models import QuizTurn
+from quiz.views import get_user_progress
 
 
 class SignUpView(CreateView):
@@ -16,7 +18,24 @@ class SignUpView(CreateView):
 
 @login_required
 def profile(request):
-    return render(request, 'user/profile.html')
+    user = request.user
+    turns = list(map(lambda t: (t.quiz.name, get_user_progress(t.user, t.quiz)),
+                     QuizTurn.objects.filter(user=user, is_completed=True).order_by('quiz_id')))
+    temp_grouped_turns = {}
+
+    for quiz, info in turns:
+        if quiz not in temp_grouped_turns:
+            temp_grouped_turns[quiz] = []
+        temp_grouped_turns[quiz].append(info)
+
+    # Remove duplicates by converting lists of dictionaries to sets of frozensets and back to lists of dictionaries
+    for quiz in temp_grouped_turns:
+        unique_dicts = {frozenset(d.items()) for d in temp_grouped_turns[quiz]}
+        temp_grouped_turns[quiz] = [dict(d) for d in unique_dicts]
+
+    grouped_turn = [{'quiz': q, 'data': i} for q, i in temp_grouped_turns.items()]
+
+    return render(request, 'user/profile.html', {'data': grouped_turn})
 
 
 @login_required

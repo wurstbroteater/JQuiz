@@ -1,8 +1,31 @@
-{% extends "base.html" %}
+{% extends "leaderboard/leaderboard_base.html" %}
 
 {% block title %}Your Profile{% endblock %}
 
 {% block content %}
+    <style>
+        .quiz-header {
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #a9b7c6;
+        }
+
+        .quiz-content {
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script>
+        function toggleQuiz(element) {
+            const content = element.nextElementSibling;
+            if (content.style.display === "none") {
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        }
+    </script>
+
     <h1>Your Profile, {{ user.username }}</h1>
     <p>Email: {{ user.email }}</p>
     <ul>
@@ -10,5 +33,53 @@
         <li><a href="{% url 'delete_account' %}">Delete Account</a></li>
         <li><a href="{% url 'change_password' %}">Change Password</a></li>
     </ul>
-{% endblock %}
 
+    <h2>Your Progress</h2>
+    <div id="leaderboard">
+        {% for quiz_data in data %}
+            <div class="quiz-item">
+                <h3 class="quiz-header" onclick="toggleQuiz(this)">
+                    {{ quiz_data.quiz }}
+                </h3>
+                <div class="quiz-content" style="display: none;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Correct</th>
+                            <th>Completed</th>
+                            <th>Best Score</th>
+                            <th>Average Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for score in quiz_data.data %}
+                            <tr>
+                                <td>{{ score.correct_turns }}</td>
+                                <td>{{ score.completed_turns }}</td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress"
+                                             style="width: {{ score.best_score }}%;">{{ score.best_score }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="progress-bar">
+                                        <div class="progress"
+                                             style="width: {{ score.average_score }}%;">{{ score.average_score }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No Personal Progress</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
