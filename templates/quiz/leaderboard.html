@@ -13,7 +13,8 @@
                     <th>Rank</th>
                     <th>User</th>
                     <th>Correct</th>
-                    <th>Score (%)</th>
+                    <th>Best Score</th>
+                    <th>Average Score</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,12 +22,25 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ score.username }}</td>
-                        <td>{{ score.total_correct }}</td>
-                        <td>{{ score.score_percentage|floatformat:2 }}</td>
+                        <td>{{ score.correct_turns }}</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress"
+                                     style="width: {{ score.best_score }}%;">{{ score.best_score }}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress"
+                                     style="width: {{ score.average_score }}%;">{{ score.average_score }}%
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4">No users have completed this quiz yet.</td>
+                        <td colspan="5">No users have completed this quiz yet.</td>
                     </tr>
                 {% endfor %}
                 </tbody>

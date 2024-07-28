@@ -11,11 +11,14 @@
         <h2>Your Progress</h2>
         <table>
             <tr>
+                <th>Correct Quizzes</th>
+                <th>Completed Quizzes</th>
                 <th>Best Score</th>
                 <th>Average Score</th>
-                <th>Quizzes Completed</th>
             </tr>
             <tr>
+                <td>{{ user_progress.correct_turns }}</td>
+                <td>{{ user_progress.completed_turns }}</td>
                 <td>
                     <div class="progress-bar">
                         <div class="progress"
@@ -30,20 +33,20 @@
                         </div>
                     </div>
                 </td>
-                <td>{{ user_progress.completed_turns }}</td>
             </tr>
         </table>
 
         <!-- Existing Leaderboard Section -->
-        <h2>QUiz Leaderboard</h2>
-        <p>Average Score for Quiz: {{ leaderboard_data.average_score }}%</p>
+        <h2>Quiz Leaderboard</h2>
+        <p>Overall Average Score for Quiz: {{ leaderboard_data.average_quiz_score }}%</p>
         <table>
             <thead>
             <tr>
                 <th>Rank</th>
                 <th>User</th>
-                <th>Correct</th>
-                <th>Score (%)</th>
+                <th>Correct Quizzes</th>
+                <th>Best Score</th>
+                <th>Average Score</th>
             </tr>
             </thead>
             <tbody>
@@ -51,12 +54,25 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ score.username }}</td>
-                    <td>{{ score.total_correct }}</td>
-                    <td>{{ score.score_percentage|floatformat:2 }}</td>
+                    <td>{{ score.correct_turns }}</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress"
+                                 style="width: {{ user_progress.best_score }}%;">{{ score.best_score }}%
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress"
+                                 style="width: {{ user_progress.average_score }}%;">{{ score.average_score }}%
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No users have completed this quiz yet.</td>
+                    <td colspan="5">No users have completed this quiz yet.</td>
                 </tr>
             {% endfor %}
             </tbody>

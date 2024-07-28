@@ -1,5 +1,9 @@
 # JQuiz Changelog
 
+## 0.2
+
+- Reworked leaderboard to be more encouraging.
+
 ## 0.1
 
 - Added prototypic user account management

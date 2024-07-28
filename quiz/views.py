@@ -42,69 +42,66 @@ def leaderboard_overall_view(request):
 
 def leaderboard_quiz_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
-    leaderboard_data = _get_leaderboard(quiz)
-    user_progress = _get_user_progress(request.user, quiz)
     return render(request, 'quiz/leaderboard_quiz.html', {
-        'leaderboard_data': leaderboard_data,
-        'user_progress': user_progress,
+        'user_progress': _get_user_progress(request.user, quiz),
+        'leaderboard_data': _get_leaderboard(quiz),
     })
 
 
 def _get_leaderboard(quiz):
     turns = QuizTurn.objects.filter(quiz=quiz, is_completed=True)
     user_scores = list(map(lambda turn: _get_user_score(turn), turns))
-    user_scores = sorted(user_scores, key=lambda t: t["total_correct"], reverse=True)
+    key_avg_score = 'average_score'
+    user_scores = sorted(user_scores, key=_get_user_score_rank)
 
-    distinct_data = {}
+    distinct_scores = {}
     for d in user_scores:
         username = d['username']
-        if username not in distinct_data:
-            # extend user_score with best_score_percentage
-            distinct_data[username] = d | {
-                'best_score_percentage': max(d['score_percentage'],
-                                             distinct_data.get(username, {}).get('best_score_percentage', 0))
-            }
+        if username not in distinct_scores:
+            distinct_scores[username] = d
 
     return {
         'quiz': quiz,
-        'user_scores': list(distinct_data.values()),
-        'average_score': sum(d['score_percentage'] for d in user_scores) / len(user_scores) if user_scores else 0,
-        'percentiles': _calculate_percentiles(user_scores)
+        'user_scores': list(distinct_scores.values()),
+        'average_quiz_score': round(
+            sum(d[key_avg_score] for d in user_scores) / len(user_scores) if user_scores else 0,
+            2),
     }
 
 
+def _get_user_score_rank(user_score):
+    """
+    - Primary: best_score
+    - Secondary: average_score
+    - Tertiary: correct_turns
+    """
+    rank = (-user_score['best_score'], -user_score['average_score'], -user_score['correct_turns'])
+    return rank
+
+
 def _get_user_score(turn):
-    correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
-        'question').distinct().count()
-    total_questions = Question.objects.filter(related_quiz=turn.quiz).count()
-    # print(f"go {turn.user.username}")
-    return {
-        "total_correct": correct_user_answers,
-        "total_possible": total_questions,
-        "score_percentage": correct_user_answers * 100.0 / total_questions,
+    return _get_user_progress(turn.user, turn.quiz) | {
         "username": turn.user.username
     }
 
 
-def _calculate_percentiles(user_scores):
-    scores = [d['score_percentage'] for d in user_scores]
-    scores.sort()
-    percentiles = {}
-    for i, score in enumerate(scores):
-        percentile = (i + 1) / len(scores) * 100
-        percentiles[score] = percentile
-    return percentiles
+def _foo(turn):
+    correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
+        'question').distinct().count()
+    total_questions = Question.objects.filter(related_quiz=turn.quiz).count()
+    return correct_user_answers * 100.0 / total_questions
 
 
 def _get_user_progress(user, quiz):
     turns = QuizTurn.objects.filter(user=user, quiz=quiz, is_completed=True)
-    scores = [_get_user_score(turn)['score_percentage'] for turn in turns]
+    scores = [_foo(turn) for turn in turns]
     best_score = max(scores, default=0)
     average_score = sum(scores) / len(scores) if scores else 0
     return {
-        'best_score': best_score,
+        'correct_turns': len([turn for turn in turns if turn.is_correct()]),
+        'completed_turns': len(turns),
+        'best_score': round(best_score, 2),
         'average_score': round(average_score, 2),
-        'completed_turns': len(turns)
     }
 
 

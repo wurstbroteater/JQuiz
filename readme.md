@@ -1,6 +1,6 @@
 # JQuiz v0.2
 
-JQuiz is a web platform where users can answer multiple-choice questions related to Java in a competitive manner.
+JQuiz is a web platform where users can answer multiple-choice questions related to Java in an encouraging manner.
 
 ## Requirements
 
