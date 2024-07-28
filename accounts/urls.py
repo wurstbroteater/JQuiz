@@ -13,5 +13,5 @@ urlpatterns = [
     path("change-password/", auth_views.PasswordChangeView.as_view(), name='change_password'),
 
     path("profile/leaderboard/", views.delete_account, name='leaderboard_personal'),
-    path('delete_incomplete_quizzes/', delete_incomplete_turns, name='delete_incomplete_turns'),
+    path('delete_incomplete_turns/', delete_incomplete_turns, name='delete_incomplete_turns'),
 ]

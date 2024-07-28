@@ -56,8 +56,7 @@
             <li>
                 <a href="#" id="delete-incomplete-link"
                    style="background-color: yellowgreen;"
-                   onclick="deletePendingTurns(e)">Delete {{ pending_turns }} Pending Turn{% if pending_turns != 1 %}
-                    s{% endif %}</a>
+                   onclick="deletePendingTurns(event)">Delete {{ pending_turns }} Pending Turn{% if pending_turns != 1 %}s{% endif %}</a>
             </li>
         {% endif %}
     </ul>
