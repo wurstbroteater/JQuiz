@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from accounts import views
-from .views import SignUpView
+from .views import SignUpView, delete_incomplete_turns
 
 urlpatterns = [
     # TODO: Django already provides some mechanism for account management in /accounts. Maybe its possible to reuse it.
@@ -11,5 +11,7 @@ urlpatterns = [
     path("profile/update_email/", views.update_email, name='update_email'),
     path("profile/delete_account/", views.delete_account, name='delete_account'),
     path("change-password/", auth_views.PasswordChangeView.as_view(), name='change_password'),
+
     path("profile/leaderboard/", views.delete_account, name='leaderboard_personal'),
+    path('delete_incomplete_quizzes/', delete_incomplete_turns, name='delete_incomplete_turns'),
 ]

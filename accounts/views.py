@@ -1,5 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -35,7 +37,9 @@ def profile(request):
 
     grouped_turn = [{'quiz': q, 'data': i} for q, i in temp_grouped_turns.items()]
 
-    return render(request, 'user/profile.html', {'data': grouped_turn})
+    pending_turns = QuizTurn.objects.filter(user=user, is_completed=False).count()
+    return render(request, 'user/profile.html',
+                  {'data': grouped_turn, 'pending_turns': pending_turns})
 
 
 @login_required
@@ -64,3 +68,13 @@ def delete_account(request):
     else:
         form = DeleteAccountForm()
     return render(request, 'user/delete_account.html', {'form': form})
+
+
+@login_required
+@csrf_exempt
+def delete_incomplete_turns(request):
+    if request.method == 'POST':
+        user = request.user
+        QuizTurn.objects.filter(user=user, is_completed=False).delete()
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'}, status=400)

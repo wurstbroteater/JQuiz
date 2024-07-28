@@ -2,6 +2,7 @@
 
 ## 0.2
 
+- Added profile ability to delete pending quiz turns.
 - Added personal progress overview to profile.
 - Reworked leaderboard to be more encouraging.
 

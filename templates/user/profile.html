@@ -24,6 +24,26 @@
                 content.style.display = "none";
             }
         }
+
+        function deletePendingTurns(e) {
+            e.preventDefault();
+            if (confirm("Are you sure you want to delete all incomplete quizzes?")) {
+                fetch("{% url 'delete_incomplete_turns' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Failed to delete incomplete quizzes.");
+                    }
+                });
+            }
+        }
     </script>
 
     <h1>Your Profile, {{ user.username }}</h1>
@@ -32,6 +52,14 @@
         <li><a href="{% url 'update_email' %}">Change Email</a></li>
         <li><a href="{% url 'delete_account' %}">Delete Account</a></li>
         <li><a href="{% url 'change_password' %}">Change Password</a></li>
+        {% if pending_turns > 0 %}
+            <li>
+                <a href="#" id="delete-incomplete-link"
+                   style="background-color: yellowgreen;"
+                   onclick="deletePendingTurns(e)">Delete {{ pending_turns }} Pending Turn{% if pending_turns != 1 %}
+                    s{% endif %}</a>
+            </li>
+        {% endif %}
     </ul>
 
     <h2>Your Progress</h2>
