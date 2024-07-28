@@ -2,9 +2,41 @@
 
 {% block title %}{{ leaderboard_data.quiz.name }} - Leaderboard{% endblock %}
 
+
 {% block content %}
     <div id="leaderboard">
         <h1>{{ leaderboard_data.quiz.name }} - Leaderboard</h1>
+
+        <!-- Your Progress Section -->
+        <h2>Your Progress</h2>
+        <table>
+            <tr>
+                <th>Best Score</th>
+                <th>Average Score</th>
+                <th>Quizzes Completed</th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress"
+                             style="width: {{ user_progress.best_score }}%;">{{ user_progress.best_score }}%
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress"
+                             style="width: {{ user_progress.average_score }}%;">{{ user_progress.average_score }}%
+                        </div>
+                    </div>
+                </td>
+                <td>{{ user_progress.completed_turns }}</td>
+            </tr>
+        </table>
+
+        <!-- Existing Leaderboard Section -->
+        <h2>QUiz Leaderboard</h2>
+        <p>Average Score for Quiz: {{ leaderboard_data.average_score }}%</p>
         <table>
             <thead>
             <tr>
@@ -31,3 +63,5 @@
         </table>
     </div>
 {% endblock %}
+
+

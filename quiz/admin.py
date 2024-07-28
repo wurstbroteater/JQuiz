@@ -12,7 +12,7 @@ class UserAnswerAdmin(admin.ModelAdmin):
 
 
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["id", "name"]
     fieldsets = [
         (None, {"fields": ["name"]}),
     ]
