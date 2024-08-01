@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
@@ -17,7 +18,7 @@ class IndexView(generic.ListView):
         return Question.objects.order_by("-submit_date")[:5]
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     """
     Shows all details of a single Question
     """
@@ -36,43 +37,73 @@ class DetailView(generic.DetailView):
 
 def leaderboard_overall_view(request):
     quizzes = Quiz.objects.all()
-    return render(request, 'quiz/leaderboard.html',
+    return render(request, 'leaderboard/leaderboard.html',
                   {'leaderboard_data': list(map(lambda q: _get_leaderboard(q), quizzes))})
 
 
 def leaderboard_quiz_view(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
-    return render(request, 'quiz/leaderboard_quiz.html', {'leaderboard_data': _get_leaderboard(quiz)})
+    return render(request, 'leaderboard/leaderboard_quiz.html', {
+        'user_progress': get_user_progress(request.user, quiz),
+        'leaderboard_data': _get_leaderboard(quiz),
+    })
 
 
 def _get_leaderboard(quiz):
     turns = QuizTurn.objects.filter(quiz=quiz, is_completed=True)
     user_scores = list(map(lambda turn: _get_user_score(turn), turns))
-    user_scores = sorted(user_scores, key=lambda t: t["total_correct"], reverse=True)
-    distinct_key = "username"
-    seen_keys = set()
-    distinct_data = []
+    key_avg_score = 'average_score'
+    user_scores = sorted(user_scores, key=_get_user_score_rank)
+
+    distinct_scores = {}
     for d in user_scores:
-        k = d[distinct_key]
-        if k not in seen_keys:
-            distinct_data.append(d)
-            seen_keys.add(k)
+        username = d['username']
+        if username not in distinct_scores:
+            distinct_scores[username] = d
 
     return {
         'quiz': quiz,
-        'user_scores': distinct_data
+        'user_scores': list(distinct_scores.values()),
+        'average_quiz_score': round(
+            sum(d[key_avg_score] for d in user_scores) / len(user_scores) if user_scores else 0,
+            2),
     }
 
 
+def _get_user_score_rank(user_score):
+    """
+    - Primary: best_score
+    - Secondary: average_score
+    - Tertiary: correct_turns
+    """
+    rank = (-user_score['best_score'], -user_score['average_score'], -user_score['correct_turns'])
+    return rank
+
+
 def _get_user_score(turn):
-    correct_user_answers = (UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True)
-                            .values('question').distinct().count())
+    return get_user_progress(turn.user, turn.quiz) | {
+        "username": turn.user.username
+    }
+
+
+def _get_score(turn):
+    correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
+        'question').distinct().count()
     total_questions = Question.objects.filter(related_quiz=turn.quiz).count()
-    return {"total_correct": correct_user_answers,
-            "total_possible": total_questions,
-            "score_percentage": correct_user_answers * 100.0 / total_questions,
-            "username": turn.user.username
-            }
+    return correct_user_answers * 100.0 / total_questions
+
+
+def get_user_progress(user, quiz):
+    turns = QuizTurn.objects.filter(user=user, quiz=quiz, is_completed=True)
+    scores = [_get_score(turn) for turn in turns]
+    best_score = max(scores, default=0)
+    average_score = sum(scores) / len(scores) if scores else 0
+    return {
+        'correct_turns': len([turn for turn in turns if turn.is_correct()]),
+        'completed_turns': len(turns),
+        'best_score': round(best_score, 2),
+        'average_score': round(average_score, 2),
+    }
 
 
 # --------------------------------------- Quiz ----------------------------------

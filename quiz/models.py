@@ -44,6 +44,16 @@ class QuizTurn(models.Model):
         state = "completed" if self.is_completed else "pending"
         return f"Turn {self.id} {state} {self.user.username} : {self.quiz}"
 
+    def is_correct(self):
+        """
+        Returns true if the number of correct user answers matches the number of total questions for
+        the related quiz questions.
+        """
+        correct_user_answers = UserAnswer.objects.filter(turn=self, selected_choice__is_correct=True).values(
+            'question').distinct().count()
+        total_questions = Question.objects.filter(related_quiz=self.quiz).count()
+        return correct_user_answers == total_questions
+
 
 class UserAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
