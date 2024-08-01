@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
@@ -17,7 +18,7 @@ class IndexView(generic.ListView):
         return Question.objects.order_by("-submit_date")[:5]
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     """
     Shows all details of a single Question
     """
@@ -85,7 +86,7 @@ def _get_user_score(turn):
     }
 
 
-def _foo(turn):
+def _get_score(turn):
     correct_user_answers = UserAnswer.objects.filter(turn=turn, selected_choice__is_correct=True).values(
         'question').distinct().count()
     total_questions = Question.objects.filter(related_quiz=turn.quiz).count()
@@ -94,7 +95,7 @@ def _foo(turn):
 
 def get_user_progress(user, quiz):
     turns = QuizTurn.objects.filter(user=user, quiz=quiz, is_completed=True)
-    scores = [_foo(turn) for turn in turns]
+    scores = [_get_score(turn) for turn in turns]
     best_score = max(scores, default=0)
     average_score = sum(scores) / len(scores) if scores else 0
     return {
